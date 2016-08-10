@@ -1,6 +1,6 @@
 package de.dualuse.commons.math;
 
-public class ArrayVector extends Vector {
+public abstract class ArrayVector extends Vector {
 	final double[] v;
 	
 	ArrayVector(double[] values) {
@@ -12,7 +12,7 @@ public class ArrayVector extends Vector {
 	}
 
 	@Override
-	ArrayVector v(int i, double v) {
+	public ArrayVector v(int i, double v) {
 		this.v[i]=v;
 		return this;
 	}

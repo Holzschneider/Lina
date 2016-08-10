@@ -2,7 +2,7 @@ package de.dualuse.commons.math;
 
 import java.util.Arrays;
 
-public class ArrayMatrix extends Matrix {
+public abstract class ArrayMatrix extends Matrix {
 
 	public final double m[][];
 	
