@@ -4,8 +4,8 @@ import javax.sound.midi.Sequence;
 
 public abstract class Matrix {
 	
-//	abstract int rows();
-//	abstract int cols();
+	abstract int rows();
+	abstract int cols();
 		
 	abstract Matrix v(int row, int col, double v);
 	abstract double v(int row, int col);

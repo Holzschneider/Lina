@@ -5,9 +5,15 @@ public class ArrayMatrixTest {
 		
 		
 //		Equation e = Equation.let(A).concat(b).transform(x).equal( b );
-		
+//		Equation e = Equation.let(A).mul(B).mul(x).equal( b );
 //		e.solve(x);
-		
+//		
+//		Matrix A = ...;
+//		Vector b = ...;
+//		Variable<Vector> x = ...;
+//		Vector result = Equation.let(A).times(x).equal(b).solve();
+//		
+//		Equation.let(a).times(x1).plus( 
 		
 		
 		
