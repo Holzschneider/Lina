@@ -4,14 +4,15 @@ import javax.sound.midi.Sequence;
 
 public abstract class Matrix {
 	
-	abstract int rows();
-	abstract int cols();
+	protected abstract int rows();
+	protected abstract int cols();
 		
-	abstract Matrix v(int row, int col, double v);
-	abstract double v(int row, int col);
+	protected abstract Matrix v(int row, int col, double v);
+	protected abstract double v(int row, int col);
 	
-	abstract Matrix concatenate(Matrix m);
-	abstract Matrix preconcatenate(Matrix m);
+	public abstract Matrix concatenate(Matrix m);
+	public abstract Matrix preConcatenate(Matrix m);
+	public abstract ArrayMatrix concatenation(Matrix a, Matrix b);
 	
 	abstract Vector transform(Vector v);
 	
