@@ -2,218 +2,144 @@ package de.dualuse.commons.math;
 
 import java.util.Arrays;
 
-import javax.sound.midi.Sequence;
-
 public class ArrayMatrix extends Matrix {
 
-	public final double m[][];
+	public final double A[][];
 	
-	ArrayMatrix(double n[][]) {
-		m = new double[n.length][];
-		for (int i=0,I=m.length;i<I;i++)
-			m[i] = n[i].clone();
+	ArrayMatrix(double B[][]) {
+		this.A = new double[B.length][];
+		for (int i=0,I=A.length;i<I;i++)
+			this.A[i] = B[i].clone();
 	}
-
+	
 	public ArrayMatrix(int rows, int cols) {
-		this.m = new double[rows][cols];
+		this.A = new double[rows][cols];
 	}
 
-	@Override
-	protected double v(int row, int col) {
-		return m[row][col];
-	}
-
-	@Override
-	protected Matrix v(int row, int col, double v) {
-		m[row][col] = v;
-		return this;
-	}
-	
-	
-	////////// Basic Matrix Operations
-
-	private double inner(int n, Matrix a, int row, Matrix b, int col) {
-		double sum = 0;
-		
-		for (int i=0;i<n;i++)
-			sum += a.v(row,i)*b.v(i,col);
-		
-		return sum;
-	}
-	
-	private void rows(int n, Matrix a, int row, Matrix b, int col) {
-		double v = inner(n, a, row, b, col);
-		if (col+1<n) rows(n, a, row, b, col+1);
-		a.v(row, col,v);
-	}
-	
-	private void cols(int n, Matrix a, int row, Matrix b, int col) {
-		double v = inner(n, a, row, b, col);
-		if (row+1<n) cols(n, a, row+1, b, col);
-		b.v(row, col,v);
-	}
-	
-
-	@Override
-	public ArrayMatrix concatenate(Matrix b) {
-		for (int r=0,R=m.length;r<R;r++)
-			rows(R,this,r,b,0);
-				
-		return this;
-	}
-	
-	
-	@Override
-	public ArrayMatrix preConcatenate(Matrix b) {
-		for (int r=0,R=m.length;r<R;r++)
-			cols(R,b,0,this,r);
-				
-		return this;
-	}
-	
-	@Override
-	public ArrayMatrix concatenation(Matrix a, Matrix b) {
-		if (a.equals(b))
-			throw new IllegalArgumentException();
-		else
-		if (a==this) 
-			a.concatenate(b);
-		else
-		if (b==this) 
-			b.preConcatenate(a);
-		else
-			for (int r=0,c=0,i=0,R=m.length,C=R;r<R;r++,c=i=0)
-				for (double sum=C=m[r].length;c<C;m[r][c]=sum,c++)
-					for (sum=0,i=0;i<R;i++)
-						sum += a.v(r,i)*b.v(i,c);
-
-		return this;
-	}
-	
-
-	////////// Solving
-	
-//	public abstract Matrix decompose(Matrix L, Matrix U);
-	
-	public ArrayMatrix decompose(Matrix L, Matrix U) {
-
-		// Code: Cormen et al., page 756
-	    int i, j, k, n = m.length;
-	    for ( k = 0; k < n; ++k) {
-	        U.v( k, k, m[ k][ k]);
-	        for ( i = k; i < n; ++i) {
-	            L.v( i, k, m[ i][ k] / U.v( k, k ));
-	            U.v( k, i, m[ k][ i]);
-	        }
-	        for( i = k; i < n; ++i) 
-	            for( j = k+1; j < n; ++j) 
-	                m[ i][ j] = m[ i][ j] - L.v( i, k)*U.v( k, j);
-	    }
-		
-	    return this.concatenation(L, U);
-	}
-
-//	public ArrayMatrix decompose(Matrix L, Matrix U) {
-//		for (int k = 0, i = 0, j=0,n=m.length; k<n;i=++k) {
-//			for (double v=u[k]=A[k][k];i<n;u[i] = a[i],i++)
-//				L[i][k] = A[i][k]/v;
-////	
-////			for (i=j=k;i<n;i++,j=k)
-////				for (double a[]=A[i],u[]=U[k],l=L[i][k];j<n;j++)
-////					a[j]-= l*u[j];
-////			
-//		}
-//		
-//		// Code: Cormen et al., page 756
-////	    int i, j, k, n = m.length;
-////	    for ( k = 0; k < n; ++k) {
-////	        U.v( k, k, v( k, k));
-////	        for ( i = k; i < n; ++i) {
-////	            L.v( i, k, v( i, k) / U.v( k, k ));
-////	            U.v( k, i, v( k, i) );
-////	        }
-////	        for( i = k; i < n; ++i) 
-////	            for( j = k+1; j < n; ++j) 
-////	                m[ i][ j] = m[ i][ j] - L.v( i, k)*U.v( k, j);
-////	    }
-//		
-//	    return this.concatenation(L, U);
-//	}
-
-
-//	 decompose
-	protected static void decompose(int n, double[][] M, double[][] L, double[][] U) {
-		
-	    // Code: Cormen et al., page 756
-	    int i, j, k;
-	    for ( k = 0; k < n; ++k) {
-	        U[ k][ k] = M[ k][ k];
-	        for ( i = k+1; i < n; ++i) {
-	            L[ i][ k] = M[ i][ k] / U[ k][ k];
-	            U[ k][ i] = M[ k][ i];
-	        }
-	        for( i = k+1; i < n; ++i) {
-	            for( j = k+1; j < n; ++j) {
-	                M[ i][ j] = M[ i][ j] - L[ i][ k]*U[ k][ j];
-	            }
-	        }
-	    }
-	}
-
-	// solve
-	protected static void solve(int n, double[][] L, double[][] U, double[] y, double[] x) {
-		
-	    // Code: Cormen et al., page 756
-//	    double[] y = b;//new double[n];
-	    int i, j;
-
-	    // forward substitution
-	    for ( i = 0; i < n; ++i) {
-//	        y[ i] = b[ i];
-	        for ( j = 0; j < i; ++j) {
-	            y[ i] -= L[ i][ j] * y[ j];
-	        }
-	    }
-
-	    // back substitution
-	    for ( i = n-1; i >= 0; --i) {
-	        x[ i] = y[ i];
-	        for ( j = i+1; j < n; ++j) {
-	            x[ i] -= U[ i][ j] * x[ j];
-	        }
-	        x[ i] /= U[ i][ i];
-	    }
-	}
-	
-
-	
-	
-	
-	
-	
-	
-	@Override
-	public String toString() {
-		return "ArrayMatrix"+Arrays.deepToString(m);
-	}
 
 	@Override
 	protected int rows() {
-		// TODO Auto-generated method stub
-		return 0;
+		return A.length;
 	}
 
 	@Override
 	protected int cols() {
-		// TODO Auto-generated method stub
-		return 0;
+		return A[0].length;
+	}
+	
+	@Override
+	protected double element(int row, int col) {
+		return A[row][col];
 	}
 
 	@Override
-	Vector transform(Vector v) {
-		// TODO Auto-generated method stub
-		return null;
+	protected Matrix element(int row, int col, double value) {
+		A[row][col] = value;
+		return this;
 	}
+
+	@Override
+	protected double[] row(int row) {
+//		return A[row].clone();
+		return A[row];
+	}
+	
+	@Override
+	protected Matrix row(int row, double[] values) {
+		double[] A_row = A[row]; 
+		if (values!=A_row)
+			for (int i=0,I=A_row.length;i<I;i++)
+				A_row[i]=values[i];
+			
+		return this;
+	}
+	
+	@Override
+	protected double dot(int col, double vector[]) {
+		double sum = 0;
+		
+		for (int i=0,I=vector.length;i<I;i++)
+			sum +=A[i][col]*vector[i];
+		
+		return sum;
+	}
+	
+	@Override
+	public ArrayMatrix concatenation(Matrix a, Matrix b) {
+		super.concatenation(a, b);
+		return this;
+	}
+	
+	////////// Solving
+	
+//	public ArrayMatrix decompose(Matrix L, Matrix U) {
+//		// Code: Cormen et al., page 756
+//		Matrix A = this;
+//	    int i, j, k, n = A.rows();
+//	    for ( k = 0; k < n; ++k) {
+//	        U.element( k, k, A.element( k, k));
+//	        for ( i = k; i < n; ++i) {
+//	            L.element( i, k, A.element( i, k) / U.element( k, k ));
+//	            U.element( k, i, A.element( k, i) );
+//	        }
+//	        for( i = k; i < n; ++i) 
+//	            for( j = k+1; j < n; ++j) 
+//	                A.element(i,j, A.element( i, j) - L.element( i, k)*U.element( k, j));
+//	    }
+//		
+//	    return this.concatenation(L, U);
+//	}
+
+////	 decompose
+//	protected static void decompose(int n, double[][] M, double[][] L, double[][] U) {
+//		
+//	    // Code: Cormen et al., page 756
+//	    int i, j, k;
+//	    for ( k = 0; k < n; ++k) {
+//	        U[ k][ k] = M[ k][ k];
+//	        for ( i = k+1; i < n; ++i) {
+//	            L[ i][ k] = M[ i][ k] / U[ k][ k];
+//	            U[ k][ i] = M[ k][ i];
+//	        }
+//	        for( i = k+1; i < n; ++i) {
+//	            for( j = k+1; j < n; ++j) {
+//	                M[ i][ j] = M[ i][ j] - L[ i][ k]*U[ k][ j];
+//	            }
+//	        }
+//	    }
+//	}
+//
+//	// solve
+//	protected static void solve(int n, double[][] L, double[][] U, double[] y, double[] x) {
+//		
+//	    // Code: Cormen et al., page 756
+////	    double[] y = b;//new double[n];
+//	    int i, j;
+//
+//	    // forward substitution
+//	    for ( i = 0; i < n; ++i) {
+////	        y[ i] = b[ i];
+//	        for ( j = 0; j < i; ++j) {
+//	            y[ i] -= L[ i][ j] * y[ j];
+//	        }
+//	    }
+//
+//	    // back substitution
+//	    for ( i = n-1; i >= 0; --i) {
+//	        x[ i] = y[ i];
+//	        for ( j = i+1; j < n; ++j) {
+//	            x[ i] -= U[ i][ j] * x[ j];
+//	        }
+//	        x[ i] /= U[ i][ i];
+//	    }
+//	}
+//	
+
+	@Override
+	public String toString() {
+		return "ArrayMatrix"+Arrays.deepToString(A);
+	}
+
 
 	@Override
 	Matrix transpose(Matrix m) {
@@ -232,15 +158,19 @@ public class ArrayMatrix extends Matrix {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public Vector fill(Sequence r) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	
+	@Override public ArrayMatrix clone() {
+		double B[][] = A.clone();
+		
+		for (int i=0,I=B.length;i<I;i++)
+			B[i] = B[i].clone();
+		
+		return new ArrayMatrix(B);
 	}
-	
-	
 
+	
+	
 	
 	
 //	protected static void decompose(int n, double[][] A, double[][] L, double[][] U){

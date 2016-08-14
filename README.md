@@ -1,6 +1,7 @@
 # Lina
 Linear Algebra for Java optimized for elegance and ease-of-use instead of raw speed.
 
+  
 
 Release
 -------
@@ -47,3 +48,13 @@ and this
 	dependencies {
 	  compile 'de.dualuse.commons:Lina:0.+'
 	}
+
+	
+FAQ
+--------------------
+
+*Design Decisions*
+
+**doubles only**: (a) yields simpler code for JavaScript, (b) code-inlined math is expected to never be a performance bottleneck, (c) serious bulk math operations are supposed to be done with serious bulk math libraries, or off-loaded to CUDA/OpenCL/Compute-whatever 
+
+**2D/3D/4D**: (a) the d does not denote storage class but dimensionality, (b) in every printed medium that refers to 3D as three-dimensions the "D" is in caps

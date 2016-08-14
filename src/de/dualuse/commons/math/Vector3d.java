@@ -11,7 +11,7 @@ public abstract class Vector3d extends Vector {
 	}
 	
 	@Override
-	public double v(int i) {
+	public double element(int i) {
 		switch (i) {
 		case 0: return x;
 		case 1: return y;
@@ -21,7 +21,7 @@ public abstract class Vector3d extends Vector {
 	}
 
 	@Override
-	public Vector3d v(int i, double v) {
+	public Vector3d element(int i, double v) {
 		switch (i) {
 		case 0: x=v; break;
 		case 1: y=v; break;
