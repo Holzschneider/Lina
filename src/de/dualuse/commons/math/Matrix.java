@@ -9,7 +9,6 @@ public abstract class Matrix {
 	protected abstract Matrix element(int row, int col, double value);
 	protected abstract double element(int row, int col);
 	
-	protected abstract double[] row(int row);
 	protected abstract Matrix row(int row, double[] values);
 	
 	protected double dot(int col, double vector[]) {
@@ -20,64 +19,77 @@ public abstract class Matrix {
 		
 		return sum;
 	}
+	
+	
+	/**
+	 * Sets *this* NxN Matrix A to the concatenation of A:=A.A 
+	 * @return this
+	 */	
+	public abstract Matrix square();
+	
+	/**
+	 * Sets *this* MxN Matrix A to the concatenation of A:=A.B 
+	 * @param B a NxN matrix that is concatenated to it 
+	 * @return this
+	 */
+	public abstract Matrix concatenate(Matrix b);
+	
+	
+	/**
+	 * Sets the NxM Matrix B to the concatenation of B:=A.B 
+	 * @param B a NxM matrix that is concatenated to *this* NxN matrix A  
+	 * @return B
+	 */	
+	public abstract Matrix transform(Matrix B);
 
+	/*
+	 * Helper function. serves as case switch for specific argument combinations 
+	 * that need special treatment.
+	 */
+	private void concatenate(Matrix b, Matrix ab) {
+		if (b==this && ab==this) square();
+		else if (b==ab) transform(b);
+		else concatenate(b);
+	}
+	
+	
+	/**
+	 * Sets the NxM matrix B to the solution of the matrix product X:=A^-1.B.
+	 * @see solution
+	 * @param B a NxM matrix that is solved to *this* NxM matrix A
+	 * @return
+	 */
+	public abstract Matrix solve(Matrix B);
+	
+	/**
+	 * Sets this NxM matrix C to the concatenation of C:=A.B
+	 * @param A a NxP matrix
+	 * @param b a PxM matrix
+	 * @return
+	 */
+	public Matrix concatenation(Matrix A, Matrix B) {
+		A.concatenate(B, this);
+		return this;
+	}
+	
+	
+	
+	/**
+	 * Sets this MxN matrix to the solution of the the Matrix Product A^-1.B.
+	 * Effectively computes the solution x in A.x = b
+	 * 
+	 * Uses LU-Decomposition and computes exact solution for A being a NxN Matrix and X an Nx1 Matrix
+	 * Uses QR-Decomposition and computes least-squares solution for A being a MxN Matrix and X an Nx1 Matrix with M>N
+	 * 
+	 * @see http://de.mathworks.com/help/matlab/ref/mldivide.html
+	 * @param A non-singular matrix of size PxM 
+	 * @param B matrix of size PxN
+	 * @return this
+	 * @throws IllegalArgumentException upon  
+	 */
+	public abstract Matrix solution(Matrix A, Matrix B);
+	
 	////////////////////////
-	
-	private void rows(int n, Matrix a, int row, Matrix b, int col) {
-		double v = b.dot( col, a.row(row));
-		if (col+1<n) rows(n, a, row, b, col+1);
-		a.element(row, col,v);
-	}
-	
-	private void cols(int n, Matrix a, int row, Matrix b, int col) {
-		double v = b.dot( col, a.row(row));
-		if (row+1<n) cols(n, a, row+1, b, col);
-		b.element(row, col,v);
-	}
-	
-	
-	private void square() { square(this.rows(), 0, this); }
-	private static void square(int n, int i, Matrix a) {
-		int row = i/n, col = i%n;
-		double v= a.dot(col, a.row(row));
-		
-		if (i+1<n*n) square(n, i+1, a);
-		
-		a.element(row, col, v);
-	}
-	
-	
-	/*package*/ Matrix preConcatenate(Matrix b) {
-		if (b==this) square();
-		
-		for (int r=0,R=this.rows();r<R;r++)
-			cols(R,b,0,this,r);
-				
-		return this;
-	}
-	
-	public Matrix concatenate(Matrix b) {
-		if (b==this) square();
-		
-		for (int r=0,R=this.rows();r<R;r++)
-			rows(R,this,r,b,0);
-		
-		return this;
-	}
-	
-	public Matrix concatenation(Matrix a, Matrix b) {
-		if (a.equals(b)) square();
-		else if (a==this) a.concatenate(b);
-		else if (b==this) b.preConcatenate(a);
-		else for (int r=0,c=0,R=rows(),C=R;r<R;r++,c=0)
-				for (c=0,C=cols();c<C;c++)
-					this.element(r, c, b.dot(c, a.row(r)));
-
-		return this;
-	}
-	
-	abstract Matrix invert(Matrix m);
-	abstract Matrix invert();
 	
 	public Matrix identity() { zero(); for (int i=0,I=rows();i<I;i++) element(i,i,1); return this; }
 	public Matrix zero() { return fill(0); }
@@ -88,8 +100,7 @@ public abstract class Matrix {
 		
 		return this;
 	}
-	
-	
+
 	public Matrix transpose() { transpose(this.rows(),0,this); return this; }
 	static private void transpose(int n, int i, Matrix a) {
 		int row = i/n, col = i%n;
@@ -97,8 +108,7 @@ public abstract class Matrix {
 		if (i+1<n*n) transpose(n, i+1, a);
 		a.element(row, col, v);
 	}
-	
-	
+
 	Matrix transpose(Matrix A) {
 		Matrix At = this;
 		for (int r=0,R=rows();r<R;r++)
@@ -107,6 +117,11 @@ public abstract class Matrix {
 		
 		return this;
 	}
+	
+	
+	/*
+	abstract Matrix invert(Matrix m);
+	abstract Matrix invert();
 	
 	protected Matrix decompose(Matrix L, Matrix U) {
 		L.zero();
@@ -336,7 +351,8 @@ public abstract class Matrix {
 	
 	
 	/////
-	
+		
+*/	
 	@Override public abstract Matrix clone();
 	
 	public boolean equalsEpsilon(Matrix m) {
@@ -357,9 +373,7 @@ public abstract class Matrix {
 		if (!(obj instanceof Matrix)) return false;
 		return equalsEpsilon((Matrix)obj);
 	}
-	
-	
-	
+
 	
 //	public static Matrix identity( int size ) 
 //	public static Matrix zero( int rows, int cols) 
@@ -375,7 +389,6 @@ public abstract class Matrix {
 //}
 	
 
-	
 	
 	
 	

@@ -18,12 +18,8 @@ public class Matrix4D extends Matrix {
 	@Override protected int rows() { return 4; }
 	@Override protected int cols() { return 4; }
 
-	//Should never be used, when implemented correctly
-	@Override
-	protected double[] row(int row) { throw new UnsupportedOperationException(); }
 
-	@Override
-	protected Matrix row(int row, double[] values) { throw new UnsupportedOperationException(); }
+	@Override protected Matrix row(int row, double[] values) { return this; }
 
 	
 	@Override
@@ -64,15 +60,6 @@ public class Matrix4D extends Matrix {
 		return null;
 	}
 
-	@Override
-	Matrix invert(Matrix m) {
-		return null;
-	}
-
-	@Override
-	Matrix invert() {
-		return null;
-	}
 	
 	public Matrix4D() {
 		// TODO Auto-generated constructor stub
@@ -80,6 +67,28 @@ public class Matrix4D extends Matrix {
 	
 	@Override
 	public Matrix clone() {
+		return null;
+	}
+	
+	
+	@Override
+	public Matrix solution(Matrix A, Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix square() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix transform(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix solve(Matrix B) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

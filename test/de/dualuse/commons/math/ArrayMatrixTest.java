@@ -31,7 +31,7 @@ public class ArrayMatrixTest {
 		ArrayMatrix M = new ArrayMatrix(A);
 		ArrayMatrix L = new ArrayMatrix(L_), U = new ArrayMatrix(U_);
 		
-		M.decompose(L, U);
+//		M.decompose(L, U);
 		
 		
 		System.out.println(toString(M));

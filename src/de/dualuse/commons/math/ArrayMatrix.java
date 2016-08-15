@@ -16,7 +16,6 @@ public class ArrayMatrix extends Matrix {
 		this.A = new double[rows][cols];
 	}
 
-
 	@Override
 	protected int rows() {
 		return A.length;
@@ -38,11 +37,6 @@ public class ArrayMatrix extends Matrix {
 		return this;
 	}
 
-	@Override
-	protected double[] row(int row) {
-//		return A[row].clone();
-		return A[row];
-	}
 	
 	@Override
 	protected Matrix row(int row, double[] values) {
@@ -64,99 +58,50 @@ public class ArrayMatrix extends Matrix {
 		return sum;
 	}
 	
-	@Override
-	public ArrayMatrix concatenation(Matrix a, Matrix b) {
-		super.concatenation(a, b);
+	
+	///////////////////////////////////////////////////////////////
+	
+	private static void rows(int n, ArrayMatrix a, int row, Matrix b, int col, Matrix ab) {
+		double v = b.dot( col, a.A[row]);
+		if (col+1<n) rows(n, a, row, b, col+1, ab);
+		ab.element(row, col,v);
+	}
+	
+
+	private static void cols(int n, ArrayMatrix a, int row, Matrix b, int col, Matrix ab) {
+		double v = b.dot( col, a.A[row]);
+		if (row+1<n) cols(n, a, row+1, b, col, ab);
+		ab.element(row, col,v);
+	}
+	
+	private static void square(int n, int i, ArrayMatrix a) {
+		int row = i/n, col = i%n;
+		double v= a.dot(col, a.A[row]);
+		
+		if (i+1<n*n) square(n, i+1, a);
+		
+		a.element(row, col, v);
+	}
+	
+	
+	public Matrix square() {
+		square(rows(),0,this);
 		return this;
 	}
 	
-	////////// Solving
+	public Matrix concatenate(Matrix b) {
+		for (int r=0,R=this.rows();r<R;r++)
+			rows(R,this,r,b,0, this);
+		
+		return this;
+	}
 	
-//	public ArrayMatrix decompose(Matrix L, Matrix U) {
-//		// Code: Cormen et al., page 756
-//		Matrix A = this;
-//	    int i, j, k, n = A.rows();
-//	    for ( k = 0; k < n; ++k) {
-//	        U.element( k, k, A.element( k, k));
-//	        for ( i = k; i < n; ++i) {
-//	            L.element( i, k, A.element( i, k) / U.element( k, k ));
-//	            U.element( k, i, A.element( k, i) );
-//	        }
-//	        for( i = k; i < n; ++i) 
-//	            for( j = k+1; j < n; ++j) 
-//	                A.element(i,j, A.element( i, j) - L.element( i, k)*U.element( k, j));
-//	    }
-//		
-//	    return this.concatenation(L, U);
-//	}
-
-////	 decompose
-//	protected static void decompose(int n, double[][] M, double[][] L, double[][] U) {
-//		
-//	    // Code: Cormen et al., page 756
-//	    int i, j, k;
-//	    for ( k = 0; k < n; ++k) {
-//	        U[ k][ k] = M[ k][ k];
-//	        for ( i = k+1; i < n; ++i) {
-//	            L[ i][ k] = M[ i][ k] / U[ k][ k];
-//	            U[ k][ i] = M[ k][ i];
-//	        }
-//	        for( i = k+1; i < n; ++i) {
-//	            for( j = k+1; j < n; ++j) {
-//	                M[ i][ j] = M[ i][ j] - L[ i][ k]*U[ k][ j];
-//	            }
-//	        }
-//	    }
-//	}
-//
-//	// solve
-//	protected static void solve(int n, double[][] L, double[][] U, double[] y, double[] x) {
-//		
-//	    // Code: Cormen et al., page 756
-////	    double[] y = b;//new double[n];
-//	    int i, j;
-//
-//	    // forward substitution
-//	    for ( i = 0; i < n; ++i) {
-////	        y[ i] = b[ i];
-//	        for ( j = 0; j < i; ++j) {
-//	            y[ i] -= L[ i][ j] * y[ j];
-//	        }
-//	    }
-//
-//	    // back substitution
-//	    for ( i = n-1; i >= 0; --i) {
-//	        x[ i] = y[ i];
-//	        for ( j = i+1; j < n; ++j) {
-//	            x[ i] -= U[ i][ j] * x[ j];
-//	        }
-//	        x[ i] /= U[ i][ i];
-//	    }
-//	}
-//	
-
 	@Override
-	public String toString() {
-		return "ArrayMatrix"+Arrays.deepToString(A);
-	}
-
-
-	@Override
-	Matrix transpose(Matrix m) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	Matrix invert(Matrix m) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	Matrix invert() {
-		// TODO Auto-generated method stub
-		return null;
+	public Matrix transform(Matrix b) {
+		for (int c=0,C=this.cols();c<C;c++)
+			cols(C,this,0,b,c, b);
+		
+		return b;
 	}
 	
 	
@@ -168,9 +113,24 @@ public class ArrayMatrix extends Matrix {
 		
 		return new ArrayMatrix(B);
 	}
+	
 
-	
-	
+	@Override
+	public String toString() {
+		return "ArrayMatrix"+Arrays.deepToString(A);
+	}
+
+	@Override
+	public Matrix solution(Matrix A, Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix solve(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 //	protected static void decompose(int n, double[][] A, double[][] L, double[][] U){

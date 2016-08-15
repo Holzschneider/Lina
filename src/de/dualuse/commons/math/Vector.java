@@ -2,11 +2,11 @@ package de.dualuse.commons.math;
 
 import java.util.Arrays;
 
-public abstract class Vector {
+public abstract class Vector extends Matrix {
 	
-	protected abstract int dimension();
-	protected abstract double element(int i);
-	protected abstract Vector element(int i, double v);
+//	protected abstract int dimension();
+//	protected abstract double element(int i);
+//	protected abstract Vector element(int i, double v);
 	
 //	protected double x() { return element(0); }
 //	protected double y() { return element(1); }
@@ -39,7 +39,7 @@ public abstract class Vector {
 	public Vector add(Vector v) { return mix(.5, v).scale(2); }
 	public Vector subtract(Vector v) { return scale(-1).add(v).scale(-1); }
 	
-	public Vector transformation(Matrix m, Vector v) { return m.transform(this.set(v)); }
+	public Vector transformation(Matrix m, Vector v) { this.concatenation(m, v); return this; }
 	
 	
 	
@@ -59,20 +59,20 @@ public abstract class Vector {
 //	}
 	
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj==this) return true;
-		if (!(obj instanceof Vector)) return false;
-		Vector v = (Vector) obj;
-		if (v.dimension()!=this.dimension()) return false;
-		for (int i=0,I=this.dimension();i<I;i++) {
-			double delta = v.element(i)-this.element(i), deviation = delta*Math.signum(delta); 
-			if (deviation>Matrix.EPSILON)
-				return false;
-		}
-		
-		return true;
-	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj==this) return true;
+//		if (!(obj instanceof Vector)) return false;
+//		Vector v = (Vector) obj;
+//		if (v.dimension()!=this.dimension()) return false;
+//		for (int i=0,I=this.dimension();i<I;i++) {
+//			double delta = v.element(i)-this.element(i), deviation = delta*Math.signum(delta); 
+//			if (deviation>Matrix.EPSILON)
+//				return false;
+//		}
+//		
+//		return true;
+//	}
 	
 	@Override
 	public String toString() {

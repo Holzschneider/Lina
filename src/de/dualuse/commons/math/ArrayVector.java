@@ -7,16 +7,6 @@ public class ArrayVector extends Vector {
 		v = values;
 	}
 
-	@Override public double element(int i) {
-		return v[i];
-	}
-
-	@Override
-	public ArrayVector element(int i, double v) {
-		this.v[i]=v;
-		return this;
-	}
-
 	@Override
 	public double quadrance(Vector v) {
 		// TODO Auto-generated method stub
@@ -73,9 +63,71 @@ public class ArrayVector extends Vector {
 	}
 	
 
+
 	@Override
-	protected int dimension() {
-		return v.length;
+	protected int rows() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected int cols() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected Matrix element(int row, int col, double value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected double element(int row, int col) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	protected Matrix row(int row, double[] values) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix solution(Matrix A, Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix transform(Matrix v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix square() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix concatenate(Matrix b) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix solve(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 
