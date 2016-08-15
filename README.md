@@ -64,7 +64,7 @@ FAQ
 - ``A.concatenate(B) : A <- A.B `` uses A as result container, therefore implies the constraint P=M. 
 - ``A.transform(B)   : B <- A.B `` uses B as result container, hence the constraint is P=N. 
 
-This implicitely limits the use of *concatenate* and *transform* to typical cases that as implied by their name:  
+This implicitely limits the use of *concatenate* and *transform* to typical cases as implied by their name:  
 i.e. ``v = P.concatenate(T).concatenate(R).transform(v)``, as in using projection Matrix P (4x4) concatenated to a translation matrix T (4x4) and a rotation Matrix R (4x4) to transform Vector v (4x1) and retrieve it as a result.
 
     
