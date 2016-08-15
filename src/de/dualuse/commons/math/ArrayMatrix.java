@@ -120,6 +120,7 @@ public class ArrayMatrix extends Matrix {
 		return "ArrayMatrix"+Arrays.deepToString(A);
 	}
 
+	
 	@Override
 	public Matrix solution(Matrix A, Matrix B) {
 		// TODO Auto-generated method stub

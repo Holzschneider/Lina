@@ -80,6 +80,7 @@ public abstract class Matrix {
 	 * 
 	 * Uses LU-Decomposition and computes exact solution for A being a NxN Matrix and X an Nx1 Matrix
 	 * Uses QR-Decomposition and computes least-squares solution for A being a MxN Matrix and X an Nx1 Matrix with M>N
+	 * <em>Functionality intentionally mimics the Matlab function mldivide(A,B)</em>
 	 * 
 	 * @see http://de.mathworks.com/help/matlab/ref/mldivide.html
 	 * @param A non-singular matrix of size PxM 
