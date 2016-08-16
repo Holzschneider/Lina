@@ -19,20 +19,17 @@ public class Matrix4D extends Matrix {
 	@Override protected int cols() { return 4; }
 
 
-	@Override protected Matrix row(int row, double[] values) { return this; }
-
-	
-	@Override
-	protected Matrix element(int row, int col, double value) {
+	@Override protected double[] row(int row, double[] values) { 
 		switch(row) {
-		case 0: switch (col) { case 0: a00=value; break; case 1: a01=value; break; case 2: a02=value; break; case 3: a03=value; break; }
-		case 1: switch (col) { case 0: a10=value; break; case 1: a11=value; break; case 2: a12=value; break; case 3: a13=value; break; }
-		case 2: switch (col) { case 0: a20=value; break; case 1: a21=value; break; case 2: a22=value; break; case 3: a23=value; break; }
-		case 3: switch (col) { case 0: a30=value; break; case 1: a31=value; break; case 2: a32=value; break; case 3: a33=value; break; }
+		case 0: values[0] = a00; values[1] = a01; values[2] = a02; values[3] = a03; break;
+		case 1: values[0] = a10; values[1] = a11; values[2] = a12; values[3] = a13; break;
+		case 2: values[0] = a20; values[1] = a21; values[2] = a22; values[3] = a23; break;
+		case 3: values[0] = a30; values[1] = a01; values[2] = a32; values[3] = a33; break;
 		}
-		throw new ArrayIndexOutOfBoundsException("(row, col) must be in [0,4]x[0,4]");
+		
+		return values;
 	}
-
+	
 	@Override
 	protected double element(int row, int col) {
 		switch(row) {
@@ -43,10 +40,17 @@ public class Matrix4D extends Matrix {
 		}
 		throw new ArrayIndexOutOfBoundsException("(row, col) must be in [0,4)x[0,4)");
 	}
-
+	
+	
+	@Override
+	public Matrix transform(Matrix B) {
+		return null;
+	}
 	
 	@Override
 	public Matrix4D concatenate(Matrix m) {
+		m.element(0, 0);
+		
 		return null;
 	}
 
@@ -56,13 +60,11 @@ public class Matrix4D extends Matrix {
 	}
 	
 	@Override
-	Matrix transpose(Matrix m) {
-		return null;
+	public Matrix4D transpose(Matrix m) {
+		return this;
 	}
 
-	
 	public Matrix4D() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
@@ -81,13 +83,39 @@ public class Matrix4D extends Matrix {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
-	public Matrix transform(Matrix B) {
+	public Matrix solve(Matrix B) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public Matrix solve(Matrix B) {
+	public Matrix identity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix magic(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix fill(double value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix zero() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix transpose() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	protected Matrix preconcatenate(Matrix B) {
 		// TODO Auto-generated method stub
 		return null;
 	}

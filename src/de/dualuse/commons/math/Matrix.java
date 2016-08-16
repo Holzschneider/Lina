@@ -6,12 +6,22 @@ public abstract class Matrix {
 	protected abstract int rows();
 	protected abstract int cols();
 		
-	protected abstract Matrix element(int row, int col, double value);
+//	protected abstract Matrix element(int row, int col, double value);
 	protected abstract double element(int row, int col);
 	
-	protected abstract Matrix row(int row, double[] values);
+	protected abstract double[] row(int row, double[] values);
 	
-	protected double dot(int col, double vector[]) {
+	protected double rowDotCol(int row, Matrix B, int col) {
+		double sum = 0;
+		
+		for (int c=0,C=cols();c<C;c++)
+			sum += this.element(row, c) * B.element(c, col);
+		
+		return sum;
+	}
+	
+	
+	protected double colDotArray(int col, double vector[]) {
 		double sum = 0;
 		
 		for (int i=0,I=vector.length;i<I;i++)
@@ -36,22 +46,21 @@ public abstract class Matrix {
 	
 	
 	/**
+	 * Sets *this* MxN Matrix A to the concatenation of A:=B.A 
+	 * @param B a MxM matrix that is concatenated to it 
+	 * @return this
+	 */
+	protected abstract Matrix preconcatenate(Matrix B);
+	
+	/**
 	 * Sets the NxM Matrix B to the concatenation of B:=A.B 
 	 * @param B a NxM matrix that is concatenated to *this* NxN matrix A  
 	 * @return B
 	 */	
-	public abstract Matrix transform(Matrix B);
-
-	/*
-	 * Helper function. serves as case switch for specific argument combinations 
-	 * that need special treatment.
-	 */
-	private void concatenate(Matrix b, Matrix ab) {
-		if (b==this && ab==this) square();
-		else if (b==ab) transform(b);
-		else concatenate(b);
+	public<MatrixType extends Matrix> MatrixType transform(MatrixType B) {
+		B.preconcatenate(this);
+		return B;
 	}
-	
 	
 	/**
 	 * Sets the NxM matrix B to the solution of the matrix product X:=A^-1.B.
@@ -67,11 +76,7 @@ public abstract class Matrix {
 	 * @param b a PxM matrix
 	 * @return
 	 */
-	public Matrix concatenation(Matrix A, Matrix B) {
-		A.concatenate(B, this);
-		return this;
-	}
-	
+	public abstract Matrix concatenation(Matrix A, Matrix B);
 	
 	
 	/**
@@ -88,36 +93,81 @@ public abstract class Matrix {
 	 * @return this
 	 * @throws IllegalArgumentException upon  
 	 */
-	public abstract Matrix solution(Matrix A, Matrix B);
+	public Matrix solution(Matrix A, Matrix B) {
+		double[][] LU = new ArrayMatrix(A).m;
+		
+	    int m = A.rows(), n = A.cols();
+	    int piv[] = new int[m];
+		for (int i = 0; i < m; i++) 
+			piv[i] = i;
+	    int pivsign = 1;
+	    
+		double[] LUrowi;
+		double[] LUcolj = new double[m];
+
+	      // Outer loop.
+	      for (int j = 0; j < n; j++) {
+	         // Make a copy of the j-th column to localize references.
+	         for (int i = 0; i < m; i++) {
+	            LUcolj[i] = LU[i][j];
+	         }
+
+	         // Apply previous transformations.
+
+	         for (int i = 0; i < m; i++) {
+	            LUrowi = LU[i];
+
+	            // Most of the time is spent in the following dot product.
+
+	            int kmax = Math.min(i,j);
+	            double s = 0.0;
+	            for (int k = 0; k < kmax; k++) {
+	               s += LUrowi[k]*LUcolj[k];
+	            }
+
+	            LUrowi[j] = LUcolj[i] -= s;
+	         }
+	   
+	         // Find pivot and exchange if necessary.
+
+	         int p = j;
+	         for (int i = j+1; i < m; i++) {
+	            if (Math.abs(LUcolj[i]) > Math.abs(LUcolj[p])) {
+	               p = i;
+	            }
+	         }
+	         if (p != j) {
+	            for (int k = 0; k < n; k++) {
+	               double t = LU[p][k]; LU[p][k] = LU[j][k]; LU[j][k] = t;
+	            }
+	            int k = piv[p]; piv[p] = piv[j]; piv[j] = k;
+	            pivsign = -pivsign;
+	         }
+
+	         // Compute multipliers.
+	         
+	         if (j < m & LU[j][j] != 0.0) {
+	            for (int i = j+1; i < m; i++) {
+	               LU[i][j] /= LU[j][j];
+	            }
+	         }
+	      }
+
+		
+		
+		
+		return this;
+	}
 	
 	////////////////////////
 	
-	public Matrix identity() { zero(); for (int i=0,I=rows();i<I;i++) element(i,i,1); return this; }
-	public Matrix zero() { return fill(0); }
-	public Matrix fill(double value) {
-		for (int r=0,R=rows();r<R;r++)
-			for (int c=0,C=cols();c<C;c++)
-				element(r,c,value);
-		
-		return this;
-	}
+	abstract public Matrix identity();
+	abstract public Matrix magic(int i);
+	abstract public Matrix fill(double value);
+	abstract public Matrix zero();
 
-	public Matrix transpose() { transpose(this.rows(),0,this); return this; }
-	static private void transpose(int n, int i, Matrix a) {
-		int row = i/n, col = i%n;
-		double v= a.element(col,row);
-		if (i+1<n*n) transpose(n, i+1, a);
-		a.element(row, col, v);
-	}
-
-	Matrix transpose(Matrix A) {
-		Matrix At = this;
-		for (int r=0,R=rows();r<R;r++)
-			for (int c=0,C=cols();c<C;c++)
-				At.element(r,c, A.element(c,r));
-		
-		return this;
-	}
+	abstract public Matrix transpose();
+	abstract public Matrix transpose(Matrix A);
 	
 	
 	/*
@@ -374,6 +424,8 @@ public abstract class Matrix {
 		if (!(obj instanceof Matrix)) return false;
 		return equalsEpsilon((Matrix)obj);
 	}
+	
+	
 
 	
 //	public static Matrix identity( int size ) 

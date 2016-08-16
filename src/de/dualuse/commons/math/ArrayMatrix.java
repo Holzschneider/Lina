@@ -4,109 +4,128 @@ import java.util.Arrays;
 
 public class ArrayMatrix extends Matrix {
 
-	public final double A[][];
+	public final double m[][];
 	
 	ArrayMatrix(double B[][]) {
-		this.A = new double[B.length][];
-		for (int i=0,I=A.length;i<I;i++)
-			this.A[i] = B[i].clone();
+		this.m = new double[B.length][];
+		for (int i=0,I=m.length;i<I;i++)
+			this.m[i] = B[i].clone();
 	}
 	
 	public ArrayMatrix(int rows, int cols) {
-		this.A = new double[rows][cols];
+		this.m = new double[rows][cols];
+	}
+
+	public ArrayMatrix(Matrix M) {
+		m = new double[M.rows()][M.cols()];
+		
+		for (int i=0,I=m.length;i<I;i++)
+			M.row(i, m[i]);
 	}
 
 	@Override
 	protected int rows() {
-		return A.length;
+		return m.length;
 	}
 
 	@Override
 	protected int cols() {
-		return A[0].length;
+		return m[0].length;
 	}
 	
 	@Override
 	protected double element(int row, int col) {
-		return A[row][col];
+		return m[row][col];
 	}
 
 	@Override
-	protected Matrix element(int row, int col, double value) {
-		A[row][col] = value;
-		return this;
-	}
-
-	
-	@Override
-	protected Matrix row(int row, double[] values) {
-		double[] A_row = A[row]; 
+	protected double[] row(int row, double[] values) {
+		double[] A_row = m[row]; 
 		if (values!=A_row)
 			for (int i=0,I=A_row.length;i<I;i++)
-				A_row[i]=values[i];
+				values[i]=A_row[i];
 			
-		return this;
+		return values;
 	}
 	
 	@Override
-	protected double dot(int col, double vector[]) {
+	protected double rowDotCol(int row, Matrix b, int col) {
+		return b.colDotArray(col, m[row]);
+	}
+	 
+	@Override
+	protected double colDotArray(int col, double vector[]) {
 		double sum = 0;
 		
 		for (int i=0,I=vector.length;i<I;i++)
-			sum +=A[i][col]*vector[i];
+			sum +=m[i][col]*vector[i];
 		
 		return sum;
 	}
 	
-	
 	///////////////////////////////////////////////////////////////
 	
-	private static void rows(int n, ArrayMatrix a, int row, Matrix b, int col, Matrix ab) {
-		double v = b.dot( col, a.A[row]);
+	private static void rows(int n, ArrayMatrix a, int row, Matrix b, int col, ArrayMatrix ab) {
+		double v = b.colDotArray( col, a.m[row]);
 		if (col+1<n) rows(n, a, row, b, col+1, ab);
-		ab.element(row, col,v);
+		ab.m[row][col] = v;
 	}
 	
-
-	private static void cols(int n, ArrayMatrix a, int row, Matrix b, int col, Matrix ab) {
-		double v = b.dot( col, a.A[row]);
-		if (row+1<n) cols(n, a, row+1, b, col, ab);
-		ab.element(row, col,v);
-	}
-	
-	private static void square(int n, int i, ArrayMatrix a) {
+	private static void square(int n, int i, ArrayMatrix A) {
 		int row = i/n, col = i%n;
-		double v= a.dot(col, a.A[row]);
+		double v= A.colDotArray(col, A.m[row]);
 		
-		if (i+1<n*n) square(n, i+1, a);
+		if (i+1<n*n) square(n, i+1, A);
 		
-		a.element(row, col, v);
+		A.m[row][col] = v;
 	}
 	
-	
-	public Matrix square() {
+	@Override
+	public ArrayMatrix square() {
 		square(rows(),0,this);
 		return this;
 	}
 	
-	public Matrix concatenate(Matrix b) {
+	@Override
+	public ArrayMatrix concatenate(Matrix b) {
 		for (int r=0,R=this.rows();r<R;r++)
 			rows(R,this,r,b,0, this);
 		
 		return this;
 	}
-	
+
+	private static void cols(int n, ArrayMatrix a, int col, Matrix b, int row) {
+		double v = b.rowDotCol(row, a, col);
+		if (row+1<n) cols(n, a, col, b, row+1);
+		a.m[row][col] = v;
+	}
+
 	@Override
-	public Matrix transform(Matrix b) {
+	protected ArrayMatrix preconcatenate(Matrix b) {
 		for (int c=0,C=this.cols();c<C;c++)
-			cols(C,this,0,b,c, b);
+			cols(C,this,c,b,0);
 		
-		return b;
+		return this;
 	}
 	
+	@Override
+	public ArrayMatrix concatenation(Matrix A, Matrix B) {
+		if (A==this && B==this) return square();
+		else
+		if (A==this) return this.concatenate(B);
+		else
+		if (B==this) return this.preconcatenate(A);
+		else 
+		for (int r=0,R=rows();r<R;r++)
+			for (int c=0,C=cols();c<C;c++)
+				m[r][c] = A.rowDotCol(r, B, c);
+				
+		return this;
+	}
+
 	
 	@Override public ArrayMatrix clone() {
-		double B[][] = A.clone();
+		double B[][] = m.clone();
 		
 		for (int i=0,I=B.length;i<I;i++)
 			B[i] = B[i].clone();
@@ -117,7 +136,7 @@ public class ArrayMatrix extends Matrix {
 
 	@Override
 	public String toString() {
-		return "ArrayMatrix"+Arrays.deepToString(A);
+		return "ArrayMatrix"+Arrays.deepToString(m);
 	}
 
 	
@@ -129,6 +148,42 @@ public class ArrayMatrix extends Matrix {
 
 	@Override
 	public Matrix solve(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix identity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix magic(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix fill(double value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix zero() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix transpose() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix transpose(Matrix A) {
 		// TODO Auto-generated method stub
 		return null;
 	}

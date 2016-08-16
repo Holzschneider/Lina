@@ -76,11 +76,6 @@ public class ArrayVector extends Vector {
 		return 0;
 	}
 
-	@Override
-	protected Matrix element(int row, int col, double value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	protected double element(int row, int col) {
@@ -89,7 +84,7 @@ public class ArrayVector extends Vector {
 	}
 
 	@Override
-	protected Matrix row(int row, double[] values) {
+	protected double[] row(int row, double[] values) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -126,6 +121,48 @@ public class ArrayVector extends Vector {
 
 	@Override
 	public Matrix solve(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix identity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix magic(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix zero() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix transpose() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix transpose(Matrix A) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Matrix preconcatenate(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix concatenation(Matrix A, Matrix B) {
 		// TODO Auto-generated method stub
 		return null;
 	}

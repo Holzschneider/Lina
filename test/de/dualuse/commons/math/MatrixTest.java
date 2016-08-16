@@ -45,7 +45,8 @@ public class MatrixTest {
 		ArrayMatrix A2 = new ArrayMatrix(a).clone(), B2 = new ArrayMatrix(b).clone();
 		
 		System.out.println( A1.concatenation(A1,B1) );
-		System.out.println( A2.concatenation(B2, A2) );
+//		System.out.println( A2.concatenation(B2,A2) );
+		System.out.println( A2.preconcatenate(B2) );
 		
 		
 //		System.out.println(  new ArrayMatrix(3,3). concatenation( new ArrayMatrix(a), new ArrayMatrix(b) ) );
@@ -58,7 +59,7 @@ public class MatrixTest {
 		assertEquals(A.concatenation( A, B), new ArrayMatrix(ab));
 
 		ArrayMatrix A_ = new ArrayMatrix(a), B_ = new ArrayMatrix(b);
-		assertEquals(A_.concatenation( B_, A_), new ArrayMatrix(ba));
+		assertEquals(new ArrayMatrix(ba), A_.concatenation( B_, A_));
 		
 //		assertEquals(new ArrayMatrix(3,3).concatenation( new ArrayMatrix(a), new ArrayMatrix(b) ), new ArrayMatrix(ab));
 //		assertEquals(new ArrayMatrix(3,3).concatenation( new ArrayMatrix(b), new ArrayMatrix(a) ), new ArrayMatrix(ba));
