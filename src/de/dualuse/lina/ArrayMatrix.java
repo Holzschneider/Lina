@@ -153,40 +153,129 @@ public class ArrayMatrix extends Matrix {
 	}
 
 	@Override
-	public Matrix identity() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayMatrix identity() {			
+		this.fill(0);
+		for (int i=0,I=m.length;i<I;i++)
+			m[i][i] = 1;
+		
+		return this;
 	}
 
-	@Override
-	public Matrix magic(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public Matrix fill(double value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Matrix zero() {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i=0,I=m.length;i<I;i++)
+			Arrays.fill(m, value);
+		
+		return this;
 	}
 
 	@Override
 	public Matrix transpose() {
-		// TODO Auto-generated method stub
-		return null;
+		for (int r=0,R=m.length;r<R;r++)
+			for (int c=r+1;c<R;c++) {
+				double t = m[r][c];
+				m[r][c] = m[c][r];
+				m[c][r] = t;
+			}
+		
+		return this;
 	}
 
 	@Override
 	public Matrix transpose(Matrix A) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
+
+	@Override
+	public double norm(double p) {
+		return 0;
+	}
+
+	@Override
+	public double dot(Vector v) {
+		return 0;
+	}
+
+	@Override
+	public Matrix scale(double factor) {
+		return null;
+	}
+
+	@Override
+	public Matrix set(Vector v) {
+		return null;
+	}
+
+	@Override
+	public Matrix add(Vector v, double scale) {
+		for (int r=0,R=m.length;r<R;r++)
+			v.rowAddScaledArray(r, scale, m[r]);
+		
+		return this;
+	}
+	
+	@Override public Matrix add(Matrix B, double scale) { return add((Vector)B, scale); }
+	@Override public Matrix subtract(Vector v) { return add(v,-1); }
+	
+	@Override
+	public Matrix set(Matrix B) {
+		for (int r=0,R=m.length;r<R;r++)
+			B.get(r, m[r]);
+			
+		return null;
+	}
+
+	@Override
+	public Matrix set(Vector... v) {
+		return null;
+	}
+
+	@Override
+	public Matrix setColumn(int c, Vector v) {
+		return null;
+	}
+
+	@Override
+	public Matrix setRow(int r, Vector v) {
+		return null;
+	}
+
+	@Override
+	public Matrix invert() {
+		return null;
+	}
+
+	@Override
+	public Matrix invert(Matrix m) {
+		return null;
+	}
+
+	@Override
+	protected double rowAddScaledArray(int row, double scale, double[] values) {
+		return 0;
+	}
+
+	@Override
+	protected double colAddScaledArray(int col, double scale, double[] values) {
+		return 0;
+	}
+
+	@Override
+	protected ArrayMatrix get(int row, double[] values) {
+		for (int c=0,C=m[row].length;c<C;c++)
+			values[c] = m[row][c];
+		
+		return this;
+	}
+
+
+//	@Override
+//	public Vector mix(double ratio, Vector v) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	
 //	protected static void decompose(int n, double[][] A, double[][] L, double[][] U){

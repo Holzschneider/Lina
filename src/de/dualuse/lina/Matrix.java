@@ -1,6 +1,6 @@
 package de.dualuse.lina;
 
-public abstract class Matrix extends ValueMatrix {
+public abstract class Matrix extends Vector {
 	public static final double EPSILON = 1e-13;
 	
 	protected abstract int rows();
@@ -11,17 +11,18 @@ public abstract class Matrix extends ValueMatrix {
 	
 	protected abstract double[] row(int row, double[] values);
 	
-	protected double rowDotCol(int row, Matrix B, int col) {
-		double sum = 0;
-		
-		for (int c=0,C=cols();c<C;c++)
-			sum += this.element(row, c) * B.element(c, col);
-		
-		return sum;
-	}
+	protected abstract double rowDotCol(int row, Matrix B, int col);
+//	{
+//		double sum = 0;
+//		
+//		for (int c=0,C=cols();c<C;c++)
+//			sum += this.element(row, c) * B.element(c, col);
+//		
+//		return sum;
+//	}
 	
 	
-	abstract protected double colDotArray(int col, double vector[]); 
+	protected abstract double colDotArray(int col, double vector[]); 
 	
 //	protected double colDotArray(int col, double vector[]) {
 //		double sum = 0;
@@ -32,6 +33,142 @@ public abstract class Matrix extends ValueMatrix {
 //		return sum;
 //	}
 	
+	
+	////////////////////////////////
+	
+	/**
+	 * Computes the p-norm of this NxM dimensional Matrix
+	 */
+	public abstract double norm(double p);
+	
+	
+	/**
+	 * Computes the inner product of this Nx1 dimensional Matrix with the Vector v
+	 */
+	public abstract double dot(Vector v); 
+	
+
+	/**
+	 * Sets *this* NxM Matrix A to the values provided by NxM Matrix B 
+	 */
+	public abstract Matrix set( Matrix B ); 
+
+	/**
+	 * Sets *this* NxM Matrix A to the values provided by M Vectors of dimensionality N 
+	 */
+	public abstract Matrix set( Vector... v ); 
+	
+
+	/**
+	 * Sets column c of *this* of NxM Matrix to the values provided by the N-dimensional Vector V 
+	 */
+	public abstract Matrix setColumn( int c, Vector v ); 
+
+	/**
+	 * Sets row r of *this* of NxM Matrix to the values provided by the M-dimensional Vector V 
+	 */
+	public abstract Matrix setRow( int r, Vector v ); 
+
+	
+	/**
+	 * Sets *this* Nx1 Matrix A to the values provided by V 
+	 */
+	public abstract Matrix set( Vector v ); 
+	
+
+	/**
+	 * Sets *this* Nx1 Matrix A to the difference A:=A-V by subtracting each element v_j of 
+	 * the N-dimensional Vector V from its corresponding element a_0j;
+	 */
+	public abstract Matrix subtract(Vector v);
+	
+
+	/**
+	 * Sets *this* Nx1 Matrix A to the sum A:=A-V by adding each element v_j of 
+	 * the N-dimensional Vector V to its corresponding element a_0j;
+	 */
+	public Matrix add(Vector v) { return this.add(v,1); }
+
+	/**
+	 * Sets *this* NxM Matrix A to the difference A:=A-B by subtracting each element b_ij of 
+	 * the NxM Matrix B from its corresponding element a_ij;
+	 */
+	public Matrix subtract(Matrix B) { return this.add(B,-1); }
+	
+
+	/**
+	 * Sets *this* NxM Matrix A to the sum A:=A+B by adding each element b_ij of 
+	 * the NxM Matrix B to its corresponding element a_ij;
+	 */
+	public Matrix add(Matrix B) { return this.add(B,1); }
+	
+	/**
+	 * Sets *this* NxM Matrix A to the sum A:=A+sB by adding each scaled element s*b_ij of 
+	 * the NxM Matrix B to its corresponding element a_ij;
+	 */
+	public abstract Matrix add(Matrix B, double s);
+	
+	/**
+	 * Sets *this* Nx1 Matrix A to the sum A:=A-V by adding each scaled element s*v_j of 
+	 * the N-dimensional Vector V to its corresponding element a_0j;
+	 */
+	public abstract Matrix add(Vector V, double s);
+	
+
+	/**
+	 * Sets *this* NxM Matrix A to the scalar product A:=sA;
+	 */
+	public abstract Matrix scale(double s);
+
+	/**
+	 * Fills all cells of *this* NxM Matrix with value v 
+	 */
+	public abstract Matrix fill(double v);
+
+	
+	/**
+	 * Fills all cells of *this* NxM Matrix with value 0 by calling .fill(0.0);  
+	 */
+	final
+	public Matrix zero() { return fill(0.0); };
+
+
+	/**
+	 * Sets this NxN Matrix to the identity by setting all cells m_ii := 1, else m_ij:=0 
+	 */
+	public abstract Matrix identity();
+	
+	
+//	public abstract Matrix magic(int n);
+	
+	
+	/**
+	 * Sets *this* NxN Matrix to the transpose of itself 
+	 * @return this
+	 */
+	abstract public Matrix transpose();
+	
+	/**
+	 * Sets *this* NxM Matrix to the transpose of the given MxN Matrix A
+	 * @param A the MxN Matrix that is going to be transposed 
+	 * @return this
+	 */
+	abstract public Matrix transpose(Matrix A);
+	
+
+	/**
+	 * Sets *this* NxN Matrix to the inverse of itself 
+	 * @return this
+	 */
+	public abstract Matrix invert();
+	
+	/**
+	 * Sets *this* NxM Matrix to the inverse of the given MxN Matrix A
+	 * @param A the MxN Matrix that is going to be inverted 
+	 * @return this
+	 */
+	public abstract Matrix invert(Matrix m);
+
 	
 	/**
 	 * Sets *this* NxN Matrix A to the concatenation of A:=A.A 
@@ -160,18 +297,7 @@ public abstract class Matrix extends ValueMatrix {
 	
 	////////////////////////
 	
-	abstract public Matrix identity();
-	abstract public Matrix magic(int i);
-	abstract public Matrix fill(double value);
-	abstract public Matrix zero();
-
-	abstract public Matrix transpose();
-	abstract public Matrix transpose(Matrix A);
-	
-	
 	/*
-	abstract Matrix invert(Matrix m);
-	abstract Matrix invert();
 	
 	protected Matrix decompose(Matrix L, Matrix U) {
 		L.zero();
@@ -439,6 +565,7 @@ public abstract class Matrix extends ValueMatrix {
 //	public static ArrayMatrix on( Vector v ) {
 //	return new ArrayMatrix(values);
 //}
+
 	
 
 	

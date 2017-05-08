@@ -108,17 +108,7 @@ public class Matrix4D extends Matrix {
 		return null;
 	}
 	@Override
-	public Matrix magic(int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public Matrix fill(double value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public Matrix zero() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -129,6 +119,91 @@ public class Matrix4D extends Matrix {
 	}
 	@Override
 	protected Matrix preconcatenate(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	protected double rowDotCol(int row, Matrix B, int col) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public double norm(double p) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public double dot(Vector v) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public Matrix set(Matrix B) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix set(Vector... v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix setColumn(int c, Vector v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix setRow(int r, Vector v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix set(Vector v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix subtract(Vector v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix add(Matrix B, double s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix add(Vector V, double s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix scale(double s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix invert() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Matrix invert(Matrix m) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	protected double rowAddScaledArray(int row, double scale, double[] values) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	protected double colAddScaledArray(int col, double scale, double[] values) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	protected Vector get(int row, double[] values) {
 		// TODO Auto-generated method stub
 		return null;
 	}

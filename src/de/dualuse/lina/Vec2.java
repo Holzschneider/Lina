@@ -5,11 +5,7 @@ public class Vec2 implements Value2, java.io.Serializable, Curvable<Value2>, Mix
 	private static final long serialVersionUID = 1L;
 	
 	public double x, y;
-	
-	
-	
-
-	
+		
 	public Vec2 mix(Value2 a, Value2 b, final double r) {
 		return this.set(a.getX()*r+b.getX()*(1-r), a.getY()*r+b.getY()*(1-r));
 	}
