@@ -5,9 +5,6 @@ public abstract class Vector {
 //	https://de.wikipedia.org/wiki/Norm_(Mathematik)#Matrixnormen
 	public abstract double norm(double p);
 	
-	public abstract double quadrance(Vector v);
-//	public abstract double dot(double[] vector);
-	
 	public abstract double dot(Vector v); 
 	
 	public abstract Vector scale(double factor);
