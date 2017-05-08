@@ -1,4 +1,7 @@
-package de.dualuse.commons.math;
+package de.dualuse.lina;
+
+import de.dualuse.lina.ArrayMatrix;
+import de.dualuse.lina.Matrix;
 
 public class ArrayMatrixTest {
 	public static void main(String[] args) {

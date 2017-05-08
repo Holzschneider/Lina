@@ -1,4 +1,4 @@
-package de.dualuse.commons.math;
+package de.dualuse.lina;
 
 import static org.junit.Assert.*;
 

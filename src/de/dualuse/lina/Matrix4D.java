@@ -1,4 +1,4 @@
-package de.dualuse.commons.math;
+package de.dualuse.lina;
 
 /**
  * Named according to 
@@ -41,11 +41,24 @@ public class Matrix4D extends Matrix {
 		throw new ArrayIndexOutOfBoundsException("(row, col) must be in [0,4)x[0,4)");
 	}
 	
+
+	@Override
+	protected double colDotArray(int col, double[] vector) {
+		switch(col) {
+		case 0: return vector[0]*a00+vector[1]*a10+vector[2]*a20+vector[3]*a30;
+		case 1: return vector[0]*a01+vector[1]*a11+vector[2]*a21+vector[3]*a31;
+		case 2: return vector[0]*a02+vector[1]*a12+vector[2]*a22+vector[3]*a32;
+		case 3: return vector[0]*a03+vector[1]*a13+vector[2]*a23+vector[3]*a33;
+		}
+		throw new ArrayIndexOutOfBoundsException("col must be in [0,4)");
+	}
+	
 	
 	@Override
-	public Matrix transform(Matrix B) {
-		return null;
+	public <MatrixType extends Matrix> MatrixType transform(MatrixType B) {
+		return super.transform(B);
 	}
+	
 	
 	@Override
 	public Matrix4D concatenate(Matrix m) {

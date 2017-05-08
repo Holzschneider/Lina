@@ -1,6 +1,6 @@
-package de.dualuse.commons.math;
+package de.dualuse.lina;
 
-public abstract class Matrix {
+public abstract class Matrix extends ValueMatrix {
 	public static final double EPSILON = 1e-13;
 	
 	protected abstract int rows();
@@ -21,14 +21,16 @@ public abstract class Matrix {
 	}
 	
 	
-	protected double colDotArray(int col, double vector[]) {
-		double sum = 0;
-		
-		for (int i=0,I=vector.length;i<I;i++)
-			sum += this.element(i,col)*vector[i];
-		
-		return sum;
-	}
+	abstract protected double colDotArray(int col, double vector[]); 
+	
+//	protected double colDotArray(int col, double vector[]) {
+//		double sum = 0;
+//		
+//		for (int i=0,I=vector.length;i<I;i++)
+//			sum += this.element(i,col)*vector[i];
+//		
+//		return sum;
+//	}
 	
 	
 	/**
@@ -152,9 +154,6 @@ public abstract class Matrix {
 	            }
 	         }
 	      }
-
-		
-		
 		
 		return this;
 	}

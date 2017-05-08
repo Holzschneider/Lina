@@ -1,10 +1,12 @@
-package de.dualuse.commons.math;
+package de.dualuse.lina;
 
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
 import org.junit.Test;
+
+import de.dualuse.lina.ArrayMatrix;
 
 public class MatrixTest {
 	
